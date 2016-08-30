@@ -1,0 +1,54 @@
+package sinlov.toolsclass.security;
+
+import static org.junit.Assert.*;
+
+import java.math.BigInteger;
+
+import org.junit.Test;
+
+public class CoderTest {
+	 
+    @Test
+    public void test() throws Exception {
+        String inputStr = "简单加密";
+        System.err.println("原文:\n");
+        System.out.println(inputStr + "\n");
+        byte[] inputData = inputStr.getBytes();
+        String code = Coder.encryptBASE64(inputData);
+        System.err.println("BASE64加密后:\n");
+        System.out.println(code+ "\n");
+        byte[] output = Coder.decryptBASE64(code);
+ 
+        String outputStr = new String(output);
+ 
+        System.err.println("BASE64解密后:\n");
+        System.out.println(outputStr+ "\n");
+        // 验证BASE64加密解密一致性
+        assertEquals(inputStr, outputStr);
+ 
+        // 验证MD5对于同一内容加密是否一致
+        assertArrayEquals(Coder.encryptMD5(inputData), Coder
+                .encryptMD5(inputData));
+ 
+        // 验证SHA对于同一内容加密是否一致
+        assertArrayEquals(Coder.encryptSHA(inputData), Coder
+                .encryptSHA(inputData));
+ 
+        String key = Coder.initMacKey();
+        System.err.println("Mac密钥:\n");
+        System.out.print(key + "\n");
+        // 验证HMAC对于同一内容，同一密钥加密是否一致
+        assertArrayEquals(Coder.encryptHMAC(inputData, key), Coder.encryptHMAC(
+                inputData, key));
+ 
+        BigInteger md5 = new BigInteger(Coder.encryptMD5(inputData));
+        System.err.println("MD5:\n");
+        System.out.print(md5.toString(16) + "\n");
+        BigInteger sha = new BigInteger(Coder.encryptSHA(inputData));
+        System.err.println("SHA:\n");
+        System.out.print(sha.toString(32) + "\n");
+        BigInteger mac = new BigInteger(Coder.encryptHMAC(inputData, inputStr));
+        System.err.println("HMAC:\n" + mac.toString(16));
+        System.out.print(mac.toString(16) + "\n");
+    }
+}
