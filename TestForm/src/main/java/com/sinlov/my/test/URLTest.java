@@ -21,7 +21,7 @@ import java.net.URI;
  */
 public class URLTest {
     public static void main(String[] args) {
-        String serverUrl = "10.8.230.246:31313";
+        String serverUrl = "10.8.230.246:31313/echo";
         final URI url = URI.create("ws://" + serverUrl);
         new Thread(new Runnable() {
             @Override
@@ -30,6 +30,7 @@ public class URLTest {
                 System.out.println("url.getScheme = " + url.getScheme());
                 System.out.println("url.getHost = " + url.getHost());
                 System.out.println("url.getPort = " + url.getPort());
+                System.out.println("url.getPort = " + url.getPath());
             }
         }).start();
     }
