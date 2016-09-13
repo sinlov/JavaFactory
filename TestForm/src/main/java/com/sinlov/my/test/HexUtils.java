@@ -19,6 +19,7 @@ package com.sinlov.my.test;
  */
 public class HexUtils {
 
+    private static final String HEX_STR_POOL = "0123456789ABCDEF";
     private static StringBuffer buf = new StringBuffer();
 
     public static byte[] hexStr2Bytes(String hexStr) {
@@ -56,7 +57,7 @@ public class HexUtils {
      * @return byte
      */
     private static byte charToByte(char c) {
-        return (byte) "0123456789ABCDEF".indexOf(c);
+        return (byte) HEX_STR_POOL.indexOf(c);
     }
 
 
