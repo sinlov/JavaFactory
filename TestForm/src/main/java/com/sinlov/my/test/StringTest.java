@@ -51,6 +51,7 @@ public class StringTest {
         System.out.printf("\n" + a.substring(0, 6));
         System.out.printf("\n" + Short.MAX_VALUE);
         System.out.printf("\n" + Short.MAX_VALUE * 2);
+        System.out.printf("\n" + Integer.MIN_VALUE);
         System.out.printf("\n" + Integer.MAX_VALUE);
 //        System.out.printf("\n" + Integer.valueOf(""));
 //        System.out.printf("substring" + words.substring(0, 30));
