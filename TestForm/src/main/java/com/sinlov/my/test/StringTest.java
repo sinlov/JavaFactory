@@ -55,6 +55,6 @@ public class StringTest {
 //        System.out.printf("\n" + Integer.valueOf(""));
 //        System.out.printf("substring" + words.substring(0, 30));
         String number_one = "1";
-        System.out.printf("is string == int: " + (ONE == number_one));
+        System.out.printf("\nis string == int: " + (ONE == number_one));
     }
 }
