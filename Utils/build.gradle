@@ -26,15 +26,15 @@ buildscript {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+//    compile group: 'log4j', name: 'log4j', version: '1.2.17'
 }
 
-apply plugin: 'maven'
 apply plugin: 'eu.appsatori.fatjar'
 
 
-def mainClassName = "ade.sinlov.android.apk.arsc.Main"
-def outPut_version = '0.0.2'
+def mainClassName = MAIN_CLASSS_NAME
+def outputVersionCode = VERSION_CODE as int
+def outputVersionName = VERSION_NAME
 
 defaultTasks 'build', 'clean', 'fatjar', 'runOutLibs'
 
@@ -48,16 +48,11 @@ gradle.taskGraph.whenReady {
 }
 
 task runOutLibs(type: Copy, dependsOn: fatJar) {
+    println("rootProject name: ${rootProject.name}")
+    println("rootDir Path: ${rootDir}")
     from('build/libs/')
-    into('../build/outLibs')
+    into("${rootDir}/build/outLibs")
     include("${project.name}.jar")
-    rename("${project.name}.jar", "${project.name}-release-" + outPut_version + ".jar")
+    rename("${project.name}.jar", "${project.name}-release-"
+            + outputVersionName + "-" + outputVersionCode + ".jar")
 }
-
-//uploadArchives {
-//    repositories {
-//        flatDir {
-//            dirs 'build/repos'
-//        }
-//    }
-//}
