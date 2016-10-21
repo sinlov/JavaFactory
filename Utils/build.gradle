@@ -56,3 +56,11 @@ task runOutLibs(type: Copy, dependsOn: fatJar) {
     rename("${project.name}.jar", "${project.name}-release-"
             + outputVersionName + "-" + outputVersionCode + ".jar")
 }
+
+//uploadArchives {
+//    repositories {
+//        flatDir {
+//            dirs 'build/repos'
+//        }
+//    }
+//}
