@@ -25,5 +25,14 @@ public class StringSplitsTest {
         for (String split : splits) {
             System.out.println(split);
         }
+        String test_file_name = "pl_channel_channel_10.txt";
+        if(test_file_name.contains(".")){
+            System.out.println("this file is error");
+        }
+        String[] split = test_file_name.split("pl_channel_");
+        for (String s : split) {
+            System.out.println("channel_test: " + s);
+        }
+        System.out.println("");
     }
 }
