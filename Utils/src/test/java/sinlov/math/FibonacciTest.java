@@ -13,11 +13,11 @@ import org.junit.After;
  */
 public class FibonacciTest {
 
-    public static final long taskUntilFinished = 3000l;
-    public static final int RUN_COUNT = 1000;
+    public static final long taskUntilFinished = 2 * 1000l;
+    public static final int RUN_COUNT = 30;
     private long nowTimeCount = 0;
     private long fibonacciCount = 0;
-    private long fibonacciStart = 5;
+    private long fibonacciStart = 3;
     private long timeMark = 0;
 
     @Before
