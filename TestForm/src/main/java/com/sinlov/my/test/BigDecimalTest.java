@@ -23,17 +23,26 @@ import java.math.MathContext;
 public class BigDecimalTest {
     public static void main(String[] args) {
         double a1 = 25.10;
-        BigDecimal a = new BigDecimal("25.10");
+        BigDecimal a = new BigDecimal("0.1143");
         System.out.println("a = " + a);
         BigDecimal b = new BigDecimal("12");
         System.out.println("b = " + b);
+        System.out.println("=======");
+        BigDecimal wipeYuan = a.remainder(BigDecimal.TEN);
+        System.out.println("wipeYuan = " + wipeYuan);
+        BigDecimal bai = new BigDecimal("100");
+        BigDecimal wipeJiao = a.multiply(bai).remainder(bai).divide(bai, 2, BigDecimal.ROUND_HALF_DOWN);
+        System.out.println("wipeJiao = " + wipeJiao);
+        BigDecimal wipeFen = a.multiply(bai).remainder(BigDecimal.TEN).divide(bai);
+        System.out.println("wipeFen = " + wipeFen);
+
         BigDecimal remainder = a.remainder(BigDecimal.TEN, new MathContext(1));
         System.out.println("remainder = " + remainder);
         BigDecimal[] bigDecimals = a.divideAndRemainder(BigDecimal.TEN);
         System.out.println("bigDecimals[0] = " + bigDecimals[0]);
         System.out.println("bigDecimals[1] = " + bigDecimals[1]);
         double ad = a.doubleValue();
-        java.text.DecimalFormat dJiao=new java.text.DecimalFormat("0.#");
+        java.text.DecimalFormat dJiao = new java.text.DecimalFormat("0.#");
         String formatJiao = dJiao.format(ad);
         BigDecimal formatBigJiao = new BigDecimal(formatJiao);
         System.out.println("formatBigJiao = " + formatBigJiao);
