@@ -31,5 +31,9 @@ public class TestStringTest {
         System.out.println("firstRef = " + firstRef.hashCode());
         String firstCopy = new String(first);
         System.out.println("firstCopy = " + firstCopy.hashCode());
+        StringBuilder sbFirst = new StringBuilder(first);
+        System.out.println("sbFirst = " + sbFirst.hashCode());
+        StringBuilder sbSecond = new StringBuilder(second);
+        System.out.println("sbSecond = " + sbSecond.hashCode());
     }
 }
