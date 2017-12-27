@@ -4,9 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import test.TempTest;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.SortedSet;
+import java.util.*;
 
 /**
  * <pre>
@@ -30,23 +28,28 @@ public class TimeStringTreeSetTest extends TempTest {
     private static final String FIRST_MARK = "FIRST_MARK";
     private static final String LAST_MARK = "LAST_MARK";
     private static final String MID_MARK = "MID_MARK";
+    private static final String SAVE_MARK = "SAVE_MARK";
     private static final int TEST_INIT_SIZE = 5;
 
     private TimeStringTreeSet<TimeLineString> timeLineSet;
     private int count = 0;
     private long nowDate;
+    private long saveDate;
     private TimeLineString midItem;
     private TimeLineString firstItem;
     private TimeLineString lastItem;
+    private TimeLineString saveItem;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         nowDate = System.currentTimeMillis();
+        saveDate = nowDate + 4;
+        saveItem = saveItem(SAVE_MARK);
         initSet();
         addData();
-        printNowSet();
+        printNowSet(timeLineSet);
     }
 
     private void addData() {
@@ -66,9 +69,9 @@ public class TimeStringTreeSetTest extends TempTest {
         timeLineSet.add(lastItem);
     }
 
-    private void printNowSet() {
+    private void printNowSet(TimeStringTreeSet<TimeLineString> set) {
         System.out.println("===========");
-        Iterator<TimeLineString> iterator = timeLineSet.iterator();
+        Iterator<TimeLineString> iterator = set.iterator();
         printIteratorInfo(iterator);
         System.out.println("===========");
     }
@@ -84,7 +87,7 @@ public class TimeStringTreeSetTest extends TempTest {
 
     private void initSet() {
         if (timeLineSet == null) {
-            timeLineSet = new TimeStringTreeSet<TimeLineString>(new DescendingTimeString<>());
+            timeLineSet = new TimeStringTreeSet<TimeLineString>();
         }
         timeLineSet.clear();
     }
@@ -94,6 +97,14 @@ public class TimeStringTreeSetTest extends TempTest {
         item.setContent(content);
         long date = nowDate + this.count;
         item.setTime(new Date(date));
+        this.count++;
+        return item;
+    }
+
+    private TimeLineString saveItem(String content) {
+        TimeLineString item = new TimeLineString();
+        item.setContent(content);
+        item.setTime(new Date(saveDate));
         this.count++;
         return item;
     }
@@ -124,6 +135,19 @@ public class TimeStringTreeSetTest extends TempTest {
     public void test_02_mid_mark_before() throws Exception {
         SortedSet<TimeLineString> headSet = timeLineSet.headSet(midItem);
         Iterator<TimeLineString> iterator = headSet.iterator();
+        printIteratorInfo(iterator);
+    }
+
+    @Test
+    public void test_03_join() throws Exception {
+        TimeStringTreeSet<TimeLineString> d = new TimeStringTreeSet<TimeLineString>(new DescendingTimeString<>()) {
+        };
+        d.addAll(timeLineSet);
+        printNowSet(d);
+        d.add(saveItem);
+        printNowSet(d);
+        SortedSet<TimeLineString> timeLineStrings = d.subSet(lastItem, true, saveItem, true);
+        Iterator<TimeLineString> iterator = timeLineStrings.iterator();
         printIteratorInfo(iterator);
     }
 }
