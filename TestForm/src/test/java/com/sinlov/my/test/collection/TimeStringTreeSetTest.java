@@ -39,6 +39,7 @@ public class TimeStringTreeSetTest extends TempTest {
     private TimeLineString firstItem;
     private TimeLineString lastItem;
     private TimeLineString saveItem;
+    private TimeLineString saveItem1;
 
     @Override
     @Before
@@ -47,6 +48,8 @@ public class TimeStringTreeSetTest extends TempTest {
         nowDate = System.currentTimeMillis();
         saveDate = nowDate + 4;
         saveItem = saveItem(SAVE_MARK);
+        saveDate++;
+        saveItem1 = saveItem(SAVE_MARK);
         initSet();
         addData();
         printNowSet(timeLineSet);
@@ -145,6 +148,7 @@ public class TimeStringTreeSetTest extends TempTest {
         d.addAll(timeLineSet);
         printNowSet(d);
         d.add(saveItem);
+        d.add(saveItem1);
         printNowSet(d);
         SortedSet<TimeLineString> timeLineStrings = d.subSet(lastItem, true, saveItem, true);
         Iterator<TimeLineString> iterator = timeLineStrings.iterator();
