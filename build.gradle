@@ -15,10 +15,10 @@
  */
 
 buildscript {
-//    repositories {
-//        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-//        jcenter()
-//    }
+    repositories {
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        jcenter()
+    }
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
     }
@@ -62,9 +62,6 @@ allprojects {
     repositories {
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         jcenter()
-    }
-    dependencies {
-        classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
     }
     apply plugin: 'java'
     sourceCompatibility = 1.8
