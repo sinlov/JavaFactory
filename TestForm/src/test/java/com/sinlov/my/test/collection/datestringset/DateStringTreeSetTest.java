@@ -91,6 +91,14 @@ public class DateStringTreeSetTest extends TempTest {
         }
     }
 
+    private DateLineString saveItem(String content) {
+        DateLineString item = new DateLineString();
+        item.setContent(content);
+        item.setTime(new Date(saveDate));
+        this.count++;
+        return item;
+    }
+
     private void initSet() {
         if (timeLineSet == null) {
             timeLineSet = new DateStringTreeSet<DateLineString>();
@@ -103,14 +111,6 @@ public class DateStringTreeSetTest extends TempTest {
         item.setContent(content);
         long date = nowDate + this.count;
         item.setTime(new Date(date));
-        this.count++;
-        return item;
-    }
-
-    private DateLineString saveItem(String content) {
-        DateLineString item = new DateLineString();
-        item.setContent(content);
-        item.setTime(new Date(saveDate));
         this.count++;
         return item;
     }
