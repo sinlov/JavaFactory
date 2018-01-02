@@ -1,4 +1,4 @@
-package com.sinlov.my.test.collection;
+package com.sinlov.my.test.collection.datestringset;
 
 import java.util.Comparator;
 
@@ -19,7 +19,7 @@ import java.util.Comparator;
  * </pre>
  * Created by sinlov on 17/12/27.
  */
-public class AscendingTimeString<A extends TimeLineString> implements Comparator<A> {
+public class AscendingDateString<A extends DateLineString> implements Comparator<A> {
 
     @Override
     public int compare(A o1, A o2) {

@@ -1,4 +1,4 @@
-package com.sinlov.my.test.collection;
+package com.sinlov.my.test.collection.datestringset;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -22,20 +22,20 @@ import java.util.TreeSet;
  * </pre>
  * Created by sinlov on 17/12/27.
  */
-public class TimeStringTreeSet<T extends TimeLineString> extends TreeSet<T> {
+public class DateStringTreeSet<T extends DateLineString> extends TreeSet<T> {
 
-    public TimeStringTreeSet() {
+    public DateStringTreeSet() {
     }
 
-    public TimeStringTreeSet(Collection<? extends T> c) {
+    public DateStringTreeSet(Collection<? extends T> c) {
         super(c);
     }
 
-    public TimeStringTreeSet(SortedSet<T> s) {
+    public DateStringTreeSet(SortedSet<T> s) {
         super(s);
     }
 
-    public TimeStringTreeSet(Comparator<? super T> comparator) {
+    public DateStringTreeSet(Comparator<? super T> comparator) {
         super(comparator);
     }
 }

@@ -1,4 +1,4 @@
-package com.sinlov.my.test.collection;
+package com.sinlov.my.test.collection.datestringset;
 
 import java.util.Date;
 
@@ -19,7 +19,7 @@ import java.util.Date;
  * </pre>
  * Created by sinlov on 17/12/27.
  */
-public class TimeLineString implements Comparable {
+public class DateLineString implements Comparable {
 
     private Date time;
     private String content;
