@@ -1,8 +1,9 @@
 package com.sinlov.my.test;
 
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.After;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * TestString Tester.
@@ -13,11 +14,11 @@ import org.junit.After;
  */
 public class TestStringTest {
 
-    @Before
+    @BeforeClass
     public void before() throws Exception {
     }
 
-    @After
+    @AfterClass
     public void after() throws Exception {
     }
 

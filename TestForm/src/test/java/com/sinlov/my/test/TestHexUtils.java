@@ -1,8 +1,9 @@
 package com.sinlov.my.test;
 
+import org.testng.annotations.Test;
+
 import static org.junit.Assert.*;
 
-import org.junit.Test;
 
 
 /**

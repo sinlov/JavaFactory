@@ -15,7 +15,7 @@
  */
 buildscript {
     repositories {
-        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         jcenter()
     }
     dependencies {
@@ -26,9 +26,21 @@ buildscript {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
 //    compile group: 'log4j', name: 'log4j', version: '1.2.17'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.testng:testng:6.0.1'
+}
+
+test {
+    useTestNG() {
+        suites(file('src/test/resources/testng.xml'))
+    }
+//    options {
+//        listeners << 'org.uncommons.reportng.HTMLReporter'
+//        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
+//    }
 }
 
 apply plugin: 'eu.appsatori.fatjar'
@@ -57,4 +69,16 @@ task runOutLibs(type: Copy, dependsOn: fatJar) {
     include("${project.name}.jar")
     rename("${project.name}.jar", "${project.name}-release-"
             + outputVersionName + "-" + outputVersionCode + ".jar")
+}
+
+task runDefTest(dependsOn: test) {
+    group "Reporting"
+    test {
+        println """
+projectDir -> $project.projectDir.path
+"""
+        useTestNG() {
+            suites(file('src/test/resources/testng_new.xml'))
+        }
+    }
 }
