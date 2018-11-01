@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by sinlov on 2018/11/1.
  */
 public class ObjectId implements Comparable<ObjectId>, java.io.Serializable {
-    //    private static final Logger LOGGER = LoggerFactory.getLogger(ObjectId.class);
     public final int _time;
     public final int _machine;
     public final int _inc;
