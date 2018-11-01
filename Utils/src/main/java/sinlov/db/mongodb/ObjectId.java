@@ -88,6 +88,18 @@ public class ObjectId implements Comparable<ObjectId>, java.io.Serializable {
         _random = mark.hashCode();
     }
 
+    public ObjectId(int random) {
+        long timeMillis = System.currentTimeMillis();
+        _time = (int) (timeMillis / 1000);
+        _machine = _gen_machine;
+        _inc = _nextInc.getAndIncrement();
+        _new = true;
+        if (random == 0) {
+            random = new Random(System.nanoTime()).nextInt();
+        }
+        _random = random;
+    }
+
     public ObjectId() {
         long timeMillis = System.currentTimeMillis();
         _time = (int) (timeMillis / 1000);
