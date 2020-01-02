@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016 Sinlov Lotqi <sinlovgmppt@gmail.com>
+ *  Copyright 2020 Sinlov Lotqi <sinlovgmppt@gmail.com>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,72 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-buildscript {
-    repositories {
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-        jcenter()
-    }
-    dependencies {
-        classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
-        classpath depends.proguard_gradle
-    }
-}
-
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile group: 'log4j', name: 'log4j', version: '1.2.17'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+    // implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // testCompile test_implement.junit
+    testImplementation test_implement.junit
+    testImplementation test_implement.org_testng_testng
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.testng:testng:6.0.1'
+    // compile base_depend.commons_cli
+    implementation base_depend.org_apache_commons_commons_lang
+    // compileOnly base_depend.commons_cli
 }
 
-test {
-    useTestNG() {
-        suites(file('src/test/resources/testng.xml'))
-    }
-//    options {
-//        listeners << 'org.uncommons.reportng.HTMLReporter'
-//        listeners << 'org.uncommons.reportng.JUnitXMLReporter'
+//uploadArchives {
+//    repositories {
+//        flatDir {
+//            dirs 'build/repos'
+//        }
 //    }
-}
-
-apply plugin: 'eu.appsatori.fatjar'
-
-
-def mainClassName = MAIN_CLASSS_NAME
-def outputVersionCode = VERSION_CODE as int
-def outputVersionName = VERSION_NAME
-
-defaultTasks 'build', 'clean', 'fatjar', 'runOutLibs'
-
-
-gradle.taskGraph.whenReady {
-    fatJar {
-        manifest {
-            attributes("Main-Class": mainClassName)
-        }
-    }
-}
-
-task runOutLibs(type: Copy, dependsOn: fatJar) {
-    println("rootProject name: ${rootProject.name}")
-    println("rootDir Path: ${rootDir}")
-    from('build/libs/')
-    into("${rootDir}/build/outLibs")
-    include("${project.name}.jar")
-    rename("${project.name}.jar", "${project.name}-release-"
-            + outputVersionName + "-" + outputVersionCode + ".jar")
-}
-
-task runDefTest(dependsOn: test) {
-    group "Reporting"
-    test {
-        println """
-projectDir -> $project.projectDir.path
-"""
-        useTestNG() {
-            suites(file('src/test/resources/testng_new.xml'))
-        }
-    }
-}
+//}

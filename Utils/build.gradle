@@ -1,5 +1,5 @@
 /**
- *  Copyright 2016 Sinlov Lotqi <sinlovgmppt@gmail.com>
+ *  Copyright 2020 Sinlov Lotqi <sinlovgmppt@gmail.com>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,50 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-buildscript {
-    repositories {
-//        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-        jcenter()
-    }
-    dependencies {
-        classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
-        classpath depends.proguard_gradle
-    }
-}
-
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile group: 'org.json', name: 'json', version: '20180130'
-//    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+//     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // testCompile test_implement.junit
+    testImplementation test_implement.junit
+
+    // compile base_depend.commons_cli
+    implementation security_depend.org_bouncycastle_bcprov_jdk15on
+    implementation security_depend.org_bouncycastle_bcpg_jdk15on
+    implementation base_depend.commons_codec_commons_codec
+    implementation base_depend.org_json_json
+    // compileOnly base_depend.commons_cli
 }
 
-apply plugin: 'eu.appsatori.fatjar'
-
-
-def mainClassName = MAIN_CLASSS_NAME
-def outputVersionCode = VERSION_CODE as int
-def outputVersionName = VERSION_NAME
-
-defaultTasks 'build', 'clean', 'fatjar', 'runOutLibs'
-
-
-gradle.taskGraph.whenReady {
-    fatJar {
-        manifest {
-            attributes("Main-Class": mainClassName)
-        }
+test {
+    testLogging {
+        exceptionFormat = 'full'
     }
-}
-
-task runOutLibs(type: Copy, dependsOn: fatJar) {
-    println("rootProject name: ${rootProject.name}")
-    println("rootDir Path: ${rootDir}")
-    from('build/libs/')
-    into("${rootDir}/build/outLibs")
-    include("${project.name}.jar")
-    rename("${project.name}.jar", "${project.name}-release-"
-            + outputVersionName + "-" + outputVersionCode + ".jar")
 }
 
 //uploadArchives {

@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+apply from: rootProject.file("package.gradle")
+
 buildscript {
     repositories {
         maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
@@ -23,40 +25,10 @@ buildscript {
         options.encoding = "UTF-8"
     }
     dependencies {
-        classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
+//        classpath 'eu.appsatori:gradle-fatjar-plugin:0.3'
     }
 }
 
-defaultTasks 'build', 'clean'
-
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'idea'
-
-    ext {
-        depends = [
-                junit          : 'junit:junit:4.12',
-                proguard_gradle: 'net.sf.proguard:proguard-gradle:5.2.1',
-        ]
-    }
-
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        testCompile 'junit:junit:4.12'
-//        compile group: 'log4j', name: 'log4j', version: '1.2.17'
-//        testCompile depends.junit
-    }
-
-    test {
-        testLogging {
-            exceptionFormat = 'full'
-        }
-    }
-}
 
 allprojects {
     repositories {
@@ -68,6 +40,11 @@ allprojects {
     targetCompatibility = 1.8
 }
 
-task cleanAll(type: Delete) {
+//task cleanAll(type: Delete) {
+//    delete rootProject.buildDir
+//}
+
+// above gradle 3.+
+clean {
     delete rootProject.buildDir
 }
