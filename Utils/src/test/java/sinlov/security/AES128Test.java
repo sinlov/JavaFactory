@@ -25,11 +25,28 @@ public class AES128Test {
     }
 
     @Test
-    public void test_AES128_enctry_string() throws AES128.KeyLengthException {
+    public void test_AES128_right() throws Exception {
         byte[] enRaw = AES128.encrypt(url, testKeyRight);
         Assert.assertNotNull("enRaw", enRaw);
         byte[] deRaw = AES128.decrypt(enRaw, testKeyRight);
         Assert.assertNotNull("deRaw", deRaw);
         Assert.assertEquals(url, new String(deRaw, AES128.CHARSET_DEFAULT));
+    }
+
+    @Test
+    public void test_AES128_Error() {
+        try {
+            AES128.encrypt(url, testKeyError);
+        } catch (Exception e) {
+            boolean isThrowException = e instanceof AES128.KeyLengthException;
+            Assert.assertTrue("throw right exception", isThrowException);
+        }
+
+        try {
+            AES128.decrypt(url, testKeyError);
+        } catch (Exception e) {
+            boolean isThrowException = e instanceof AES128.KeyLengthException;
+            Assert.assertTrue("throw right exception", isThrowException);
+        }
     }
 }

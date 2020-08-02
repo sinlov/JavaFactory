@@ -12,8 +12,16 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class AES128 {
     public static final Charset CHARSET_DEFAULT = UTF_8;
 
-    public static byte[] encrypt(String source, String keyStr) throws KeyLengthException {
-        return encrypt(source.getBytes(UTF_8), keyStr);
+    public static byte[] encrypt(String source, String keyStr) throws Exception {
+        return encrypt(source, keyStr, CHARSET_DEFAULT);
+    }
+
+    public static byte[] encrypt(String source, String keyStr, Charset charset) throws Exception {
+        return encrypt(source.getBytes(charset), keyStr, charset);
+    }
+
+    public static byte[] encrypt(byte[] source, String keyStr) throws Exception {
+        return encrypt(source, keyStr, CHARSET_DEFAULT);
     }
 
     /**
@@ -24,24 +32,27 @@ public class AES128 {
      * @return 加密后的字节数组
      * @throws KeyLengthException 如果秘钥长度不为16则抛出
      */
-    public static byte[] encrypt(byte[] source, String keyStr) throws KeyLengthException {
-        byte[] key = getKey(keyStr);
-        if (key.length != 16) {
+    public static byte[] encrypt(byte[] source, String keyStr, Charset charset) throws Exception {
+        byte[] key = getKey(keyStr, charset);
+        if (key == null || key.length != 16) {
             throw new KeyLengthException();
         }
-        try {
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-            return cipher.doFinal(source);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+        return cipher.doFinal(source);
     }
 
-    public static byte[] decrypt(String encoded, String keyStr) throws KeyLengthException {
-        return decrypt(encoded.getBytes(UTF_8), keyStr);
+    public static byte[] decrypt(String encoded, String keyStr) throws Exception {
+        return decrypt(encoded, keyStr, CHARSET_DEFAULT);
+    }
+
+    public static byte[] decrypt(String encoded, String keyStr, Charset charset) throws Exception {
+        return decrypt(encoded.getBytes(charset), keyStr, charset);
+    }
+
+    public static byte[] decrypt(byte[] encoded, String keyStr) throws Exception {
+        return decrypt(encoded, keyStr, CHARSET_DEFAULT);
     }
 
     /**
@@ -52,23 +63,19 @@ public class AES128 {
      * @return 解密后的字节数组
      * @throws KeyLengthException 如果秘钥长度不为16则抛出
      */
-    public static byte[] decrypt(byte[] encoded, String keyStr) throws KeyLengthException {
-        byte[] key = getKey(keyStr);
-        if (key.length != 16) {
+    public static byte[] decrypt(byte[] encoded, String keyStr, Charset charset) throws Exception {
+        byte[] key = getKey(keyStr, charset);
+        if (key == null || key.length != 16) {
             throw new KeyLengthException();
         }
-        try {
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"));
-            return cipher.doFinal(encoded);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"));
+        return cipher.doFinal(encoded);
     }
 
     /**
      * confusion raw
+     *
      * @param raw raw for confusion
      * @return confused bytes
      */
@@ -180,12 +187,17 @@ public class AES128 {
 
     /**
      * Pass keyStr through SHA256 and then take 128bit as the secret key
+     * if keyStr not 16 will return null
      *
-     * @param keyStr key string
+     * @param keyStr  key string
+     * @param charset charset
      * @return secret key
      */
-    private static byte[] getKey(String keyStr) {
-        byte[] raw = keyStr.getBytes(CHARSET_DEFAULT);
+    private static byte[] getKey(String keyStr, Charset charset) {
+        byte[] raw = keyStr.getBytes(charset);
+        if (raw.length != 16) {
+            return null;
+        }
         MessageDigest sha = null;
         try {
             // SHA-256 can replace to SHA-1
