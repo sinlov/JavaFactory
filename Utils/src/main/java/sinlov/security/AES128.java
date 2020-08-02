@@ -11,6 +11,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AES128 {
     public static final Charset CHARSET_DEFAULT = UTF_8;
+    private static final String AES_NAME = "AES";
+    private static final String AES_MODE = "AES/ECB/PKCS5Padding";
+
+    //byte: 80 122 35 96 40 58 55 70 ............................44 74( 65 num of   v12[64]=74
+    //this byte[] as c++ char* char[]
+    private static final String CONFUSION_SALT = "Pz#`(:7F-a%diHm<kQDTVEKXI68loAqwsGgC42!R^ju0h@xYc][}S9B{M~+t$.>,J";
 
     public static byte[] encrypt(String source, String keyStr) throws Exception {
         return encrypt(source, keyStr, CHARSET_DEFAULT);
@@ -37,8 +43,8 @@ public class AES128 {
         if (key == null || key.length != 16) {
             throw new KeyLengthException();
         }
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        Cipher cipher = Cipher.getInstance(AES_MODE);
+        SecretKeySpec keySpec = new SecretKeySpec(key, AES_NAME);
         cipher.init(Cipher.ENCRYPT_MODE, keySpec);
         return cipher.doFinal(source);
     }
@@ -68,9 +74,52 @@ public class AES128 {
         if (key == null || key.length != 16) {
             throw new KeyLengthException();
         }
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"));
+        Cipher cipher = Cipher.getInstance(AES_MODE);
+        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, AES_NAME));
         return cipher.doFinal(encoded);
+    }
+
+    /**
+     * Pass keyStr through SHA256 and then take 128bit as the secret key
+     * if keyStr not 16 will return null
+     *
+     * @param keyStr  key string
+     * @param charset charset
+     * @return secret key
+     */
+    private static byte[] getKey(String keyStr, Charset charset) {
+        byte[] raw = keyStr.getBytes(charset);
+        if (raw.length < 16) {
+            return null;
+        }
+        MessageDigest sha = null;
+        try {
+            // SHA-256 can replace to SHA-1
+            sha = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        byte[] key = sha.digest(raw);
+        key = Arrays.copyOf(key, 16); // use only first 128 bit
+        return key;
+    }
+
+    /**
+     * Returns the hexadecimal string of the byte array
+     *
+     * @param array byte array
+     * @return hexadecimal string
+     */
+    public static String byte2Hex(byte[] array) {
+        StringBuilder strHexString = new StringBuilder();
+        for (int i = 0; i < array.length; i++) {
+            String hex = Integer.toHexString(0xff & array[i]);
+            if (hex.length() == 1) {
+                strHexString.append('0');
+            }
+            strHexString.append(hex);
+        }
+        return strHexString.toString();
     }
 
     /**
@@ -82,17 +131,15 @@ public class AES128 {
     public static byte[] confusion(byte[] raw) {
         int v13 = raw.length;
         byte[] ebbytes = raw;
-        byte[] v11 = new byte[((v13 + 2) / 3) * 4];//这里直接用byte数组
+        byte[] v11 = new byte[((v13 + 2) / 3) * 4];// Use byte array directly here
         for (int i = 0; i < v13; i += 3) {
             int v9 = 0;
             for (int j = i; j < i + 3; ++j) {
                 v9 <<= 8;
                 if (j < v13)
-                    v9 |= ebbytes[j] & 0xFF;//c语言unsigned char转int
+                    v9 |= ebbytes[j] & 0xFF;//unsigned char to int
             }
-            //byte: 80 122 35 96 40 58 55 70 ............................44 74(共65个   v12[64]=74
-            //this byte[] as c++ char* char[]
-            byte[] v12 = "Pz#`(:7F-a%diHm<kQDTVEKXI68loAqwsGgC42!R^ju0h@xYc][}S9B{M~+t$.>,J".getBytes();
+            byte[] v12 = CONFUSION_SALT.getBytes();
             //0
             v11[4 * (i / 3)] = v12[((v9 >> 18) & 0x3F)];
             //1
@@ -117,7 +164,7 @@ public class AES128 {
         return v11;
     }
 
-    public static byte[] disConfusion(byte[] confusioned) {
+    public static byte[] disConfusion(byte[] confused) {
         int a1 = 0;
         byte v6 = 0;
         byte v7 = 0;
@@ -126,10 +173,10 @@ public class AES128 {
         byte v10 = 0;
         byte v11 = 0;
         byte v12 = 0;
-        byte[] v15 = "Pz#`(:7F-a%diHm<kQDTVEKXI68loAqwsGgC42!R^ju0h@xYc][}S9B{M~+t$.>,J".getBytes(UTF_8);
+        byte[] v15 = CONFUSION_SALT.getBytes(UTF_8);
         v15 = Arrays.copyOf(v15, v15.length + 1);
         v15[v15.length - 1] = 0;
-        byte[] v16 = confusioned;
+        byte[] v16 = confused;
         int a3 = v16.length;
         int v14 = a3 / 4;
         a1 = 3 * ((int) a3 / 4);
@@ -183,49 +230,6 @@ public class AES128 {
             }
         }
         return -1;
-    }
-
-    /**
-     * Pass keyStr through SHA256 and then take 128bit as the secret key
-     * if keyStr not 16 will return null
-     *
-     * @param keyStr  key string
-     * @param charset charset
-     * @return secret key
-     */
-    private static byte[] getKey(String keyStr, Charset charset) {
-        byte[] raw = keyStr.getBytes(charset);
-        if (raw.length != 16) {
-            return null;
-        }
-        MessageDigest sha = null;
-        try {
-            // SHA-256 can replace to SHA-1
-            sha = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        byte[] key = sha.digest(raw);
-        key = Arrays.copyOf(key, 16); // use only first 128 bit
-        return key;
-    }
-
-    /**
-     * Returns the hexadecimal string of the byte array
-     *
-     * @param array byte array
-     * @return hexadecimal string
-     */
-    public static String byte2Hex(byte[] array) {
-        StringBuilder strHexString = new StringBuilder();
-        for (int i = 0; i < array.length; i++) {
-            String hex = Integer.toHexString(0xff & array[i]);
-            if (hex.length() == 1) {
-                strHexString.append('0');
-            }
-            strHexString.append(hex);
-        }
-        return strHexString.toString();
     }
 
     public static class KeyLengthException extends Exception {
